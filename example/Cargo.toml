@@ -1,0 +1,13 @@
+[package]
+name = "stability-example"
+version = "0.0.0"
+description = "Example crate demonstrating stablity usage."
+authors = ["Stephen M. Coakley <me@stephencoakley.com>"]
+edition = "2018"
+publish = false
+
+[features]
+unstable-risky-function = []
+
+[dependencies.stability]
+path = "../"
