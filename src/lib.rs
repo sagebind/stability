@@ -16,6 +16,8 @@
 //! in the stability repository.
 //!
 //! Currently, only the [`#[unstable]`][macro@unstable] attribute is available.
+//! Please see the documentation of that macro for an explanation on what it
+//! does and how to use it.
 
 use proc_macro::TokenStream;
 use syn::{Item, parse_macro_input};
@@ -33,7 +35,9 @@ mod unstable;
 /// This attribute does the following things to annotated items:
 ///
 /// - Changes the visibility of the item from `pub` to `pub(crate)`, unless a
-///   certain crate feature is enabled.
+///   certain crate feature is enabled. This ensures that internal code within
+///   the crate can always use the item, but downstream consumers cannot access
+///   it unless they opt-in to the unstable API.
 /// - Appends an "Availability" section to the item's documentation that notes
 ///   that the item is unstable, and indicates the name of the crate feature to
 ///   enable it.
@@ -56,12 +60,40 @@ mod unstable;
 ///
 /// # Examples
 ///
+/// We can apply the attribute to a public function like so:
+///
 /// ```
 /// /// This function does something really risky!
 /// ///
 /// /// Don't use it yet!
 /// #[stability::unstable(feature = "risky-function")]
 /// pub fn risky_function() {
+///     unimplemented!()
+/// }
+/// ```
+///
+/// This will essentially be expanded to the following:
+///
+/// ```
+/// /// This function does something really risky!
+/// ///
+/// /// Don't use it yet!
+/// ///
+/// /// # Availability
+/// ///
+/// /// **This API is marked as unstable** and is only available when the
+/// /// `unstable-risky-function` crate feature is enabled. This comes with no
+/// /// stability guarantees, and could be changed or removed at any time.
+/// #[cfg(feature = "unstable-risky-function")]
+/// pub fn risky_function() {
+///     unimplemented!()
+/// }
+///
+/// /// This function does something really risky!
+/// ///
+/// /// Don't use it yet!
+/// #[cfg(not(feature = "unstable-risky-function"))]
+/// pub(crate) fn risky_function() {
 ///     unimplemented!()
 /// }
 /// ```
