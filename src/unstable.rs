@@ -21,13 +21,16 @@ impl UnstableAttribute {
         if item.is_public() {
             let feature_name = self.crate_feature_name();
 
-            let doc_addendum = format!("\n\
+            let doc_addendum = format!(
+                "\n\
                 # Availability\n\
                 \n\
                 **This API is marked as unstable** and is only available when \
                 the `{}` crate feature is enabled. This comes with no stability \
                 guarantees, and could be changed or removed at any time.\
-            ", feature_name);
+            ",
+                feature_name
+            );
             item.push_attr(parse_quote! {
                 #[doc = #doc_addendum]
             });
@@ -69,9 +72,7 @@ impl From<syn::AttributeArgs> for UnstableAttribute {
             }
         }
 
-        Self {
-            feature,
-        }
+        Self { feature }
     }
 }
 
@@ -90,7 +91,7 @@ pub(crate) trait ItemLike {
 }
 
 macro_rules! impl_has_visibility {
-    ($($ty:ty),+) => {
+    ($($ty:ty),+ $(,)?) => {
         $(
             impl ItemLike for $ty {
                 fn attrs(&self) -> &[syn::Attribute] {
@@ -113,4 +114,13 @@ macro_rules! impl_has_visibility {
     };
 }
 
-impl_has_visibility!(syn::ItemEnum, syn::ItemFn, syn::ItemMod, syn::ItemStruct, syn::ItemTrait);
+impl_has_visibility!(
+    syn::ItemType,
+    syn::ItemEnum,
+    syn::ItemStruct,
+    syn::ItemFn,
+    syn::ItemMod,
+    syn::ItemTrait,
+    syn::ItemConst,
+    syn::ItemStatic,
+);
