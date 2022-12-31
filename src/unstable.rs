@@ -5,6 +5,7 @@ use syn::{parse_quote, Visibility};
 #[derive(Debug)]
 pub(crate) struct UnstableAttribute {
     feature: Option<String>,
+	issue: Option<String>
 }
 
 impl UnstableAttribute {
@@ -21,19 +22,38 @@ impl UnstableAttribute {
         if item.is_public() {
             let feature_name = self.crate_feature_name();
 
-            let doc_addendum = format!(
-                "\n\
-                # Availability\n\
-                \n\
-                **This API is marked as unstable** and is only available when \
-                the `{}` crate feature is enabled. This comes with no stability \
-                guarantees, and could be changed or removed at any time.\
-            ",
-                feature_name
-            );
-            item.push_attr(parse_quote! {
-                #[doc = #doc_addendum]
-            });
+			if let Some(issue) = &self.issue {
+				let doc_addendum = format!(
+					"\n\
+					# Availability\n\
+					\n\
+					**This API is marked as unstable** and is only available when \
+					the `{}` crate feature is enabled. This comes with no stability \
+					guarantees, and could be changed or removed at any time.
+
+The tracking issue is: `{}`
+				",
+					feature_name,
+					issue
+				);
+				item.push_attr(parse_quote! {
+					#[doc = #doc_addendum]
+				});
+			} else {
+				let doc_addendum = format!(
+					"\n\
+					# Availability\n\
+					\n\
+					**This API is marked as unstable** and is only available when \
+					the `{}` crate feature is enabled. This comes with no stability \
+					guarantees, and could be changed or removed at any time.\
+				",
+					feature_name
+				);
+				item.push_attr(parse_quote! {
+					#[doc = #doc_addendum]
+				});
+			}
 
             let mut hidden_item = item.clone();
             *hidden_item.visibility_mut() = parse_quote! {
@@ -57,6 +77,7 @@ impl UnstableAttribute {
 impl From<syn::AttributeArgs> for UnstableAttribute {
     fn from(args: syn::AttributeArgs) -> Self {
         let mut feature = None;
+		let mut issue = None;
 
         for arg in args {
             match arg {
@@ -66,13 +87,18 @@ impl From<syn::AttributeArgs> for UnstableAttribute {
                             syn::Lit::Str(s) => feature = Some(s.value()),
                             _ => panic!(),
                         }
-                    }
+                    } else if name_value.path.is_ident("issue") {
+						match name_value.lit {
+							syn::Lit::Str(s) => issue = Some(s.value()),
+							_ => panic!()
+						}
+					}
                 }
                 _ => {}
             }
         }
 
-        Self { feature }
+        Self { feature, issue }
     }
 }
 
