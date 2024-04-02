@@ -38,6 +38,14 @@ mod unstable;
 ///   certain crate feature is enabled. This ensures that internal code within
 ///   the crate can always use the item, but downstream consumers cannot access
 ///   it unless they opt-in to the unstable API.
+///   - Visibility of certain child items of the annotated item will also be
+///     changed to match the new item visibility, such as struct fields. Children
+///     that are not public will not be affected.
+///   - Child items of annotated modules will *not* have their visibility changed,
+///     as it might be desirable to be able to re-export them even if the module
+///     visibility is restricted. You should apply the attribute to each item
+///     within the module with the same feature name if you want to restrict the
+///     module's contents itself and not just the module namespace.
 /// - Appends an "Availability" section to the item's documentation that notes
 ///   that the item is unstable, and indicates the name of the crate feature to
 ///   enable it.
@@ -57,6 +65,8 @@ mod unstable;
 ///   this item's availability. The crate feature will have the string
 ///   `unstable-` prepended to it. If not specified, it will be guarded by a
 ///   catch-all `unstable` feature.
+/// - `issue`: Provide a link or reference to a tracking issue for the unstable
+///   feature. This will be included in the item's documentation.
 ///
 /// # Examples
 ///
