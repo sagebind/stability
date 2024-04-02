@@ -7,7 +7,7 @@ license = "MIT"
 repository = "https://github.com/sagebind/stability"
 documentation = "https://docs.rs/stability/"
 readme = "README.md"
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 quote = "1"

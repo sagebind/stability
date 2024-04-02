@@ -3,7 +3,7 @@ name = "stability-example"
 version = "0.0.0"
 description = "Example crate demonstrating stablity usage."
 authors = ["Stephen M. Coakley <me@stephencoakley.com>"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [features]
