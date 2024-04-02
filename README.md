@@ -30,7 +30,7 @@ Install via Cargo by adding to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-stability = "0.1"
+stability = "0.2"
 ```
 
 ### Supported Rust versions

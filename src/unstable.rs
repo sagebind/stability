@@ -46,9 +46,9 @@ impl UnstableAttribute {
                     \n\
                     **This API is marked as unstable** and is only available when \
                     the `{}` crate feature is enabled. This comes with no stability \
-                    guarantees, and could be changed or removed at any time.
-
-The tracking issue is: `{}`
+                    guarantees, and could be changed or removed at any time.\
+                    \n\
+                    The tracking issue is: `{}`\
                 ",
                     feature_name, issue
                 );
