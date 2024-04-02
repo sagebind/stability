@@ -72,9 +72,9 @@ The tracking issue is: `{}`
             }
 
             let mut hidden_item = item.clone();
-            *hidden_item.visibility_mut() = parse_quote! {
+            hidden_item.set_visibility(parse_quote! {
                 pub(crate)
-            };
+            });
 
             TokenStream::from(quote! {
                 #[cfg(feature = #feature_name)]
@@ -97,7 +97,7 @@ pub(crate) trait ItemLike {
 
     fn visibility(&self) -> &Visibility;
 
-    fn visibility_mut(&mut self) -> &mut Visibility;
+    fn set_visibility(&mut self, visibility: Visibility);
 
     fn is_public(&self) -> bool {
         matches!(self.visibility(), Visibility::Public(_))
@@ -120,8 +120,8 @@ macro_rules! impl_has_visibility {
                     &self.vis
                 }
 
-                fn visibility_mut(&mut self) -> &mut Visibility {
-                    &mut self.vis
+                fn set_visibility(&mut self, visibility: Visibility) {
+                    self.vis = visibility;
                 }
             }
         )*
@@ -131,10 +131,34 @@ macro_rules! impl_has_visibility {
 impl_has_visibility!(
     syn::ItemType,
     syn::ItemEnum,
-    syn::ItemStruct,
     syn::ItemFn,
     syn::ItemMod,
     syn::ItemTrait,
     syn::ItemConst,
     syn::ItemStatic,
 );
+
+impl ItemLike for syn::ItemStruct {
+    fn attrs(&self) -> &[syn::Attribute] {
+        &self.attrs
+    }
+
+    fn push_attr(&mut self, attr: syn::Attribute) {
+        self.attrs.push(attr);
+    }
+
+    fn visibility(&self) -> &Visibility {
+        &self.vis
+    }
+
+    fn set_visibility(&mut self, visibility: Visibility) {
+        // Also constrain visibility of all fields to be at most the given
+        // item visibility.
+        self.fields
+            .iter_mut()
+            .filter(|field| matches!(&field.vis, Visibility::Public(_)))
+            .for_each(|field| field.vis = visibility.clone());
+
+        self.vis = visibility;
+    }
+}
