@@ -8,6 +8,7 @@ repository = "https://github.com/sagebind/stability"
 documentation = "https://docs.rs/stability/"
 readme = "README.md"
 edition = "2021"
+rust-version = "1.60"
 
 [dependencies]
 quote = "1"
