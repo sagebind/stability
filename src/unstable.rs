@@ -42,14 +42,14 @@ impl UnstableAttribute {
             if let Some(issue) = &self.issue {
                 let doc_addendum = format!(
                     "\n\
-					# Availability\n\
-					\n\
-					**This API is marked as unstable** and is only available when \
-					the `{}` crate feature is enabled. This comes with no stability \
-					guarantees, and could be changed or removed at any time.
+                    # Availability\n\
+                    \n\
+                    **This API is marked as unstable** and is only available when \
+                    the `{}` crate feature is enabled. This comes with no stability \
+                    guarantees, and could be changed or removed at any time.
 
 The tracking issue is: `{}`
-				",
+                ",
                     feature_name, issue
                 );
                 item.push_attr(parse_quote! {
@@ -58,12 +58,12 @@ The tracking issue is: `{}`
             } else {
                 let doc_addendum = format!(
                     "\n\
-					# Availability\n\
-					\n\
-					**This API is marked as unstable** and is only available when \
-					the `{}` crate feature is enabled. This comes with no stability \
-					guarantees, and could be changed or removed at any time.\
-				",
+                    # Availability\n\
+                    \n\
+                    **This API is marked as unstable** and is only available when \
+                    the `{}` crate feature is enabled. This comes with no stability \
+                    guarantees, and could be changed or removed at any time.\
+                ",
                     feature_name
                 );
                 item.push_attr(parse_quote! {
