@@ -136,6 +136,7 @@ impl_has_visibility!(
     syn::ItemTrait,
     syn::ItemConst,
     syn::ItemStatic,
+    syn::ItemUse,
 );
 
 impl ItemLike for syn::ItemStruct {
