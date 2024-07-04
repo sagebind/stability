@@ -122,6 +122,7 @@ pub fn unstable(args: TokenStream, input: TokenStream) -> TokenStream {
         Item::Trait(item_trait) => attributes.expand(item_trait),
         Item::Const(item_const) => attributes.expand(item_const),
         Item::Static(item_static) => attributes.expand(item_static),
+        Item::Use(item_use) => attributes.expand(item_use),
         _ => panic!("unsupported item type"),
     }
 }

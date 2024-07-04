@@ -18,3 +18,17 @@ pub fn risky_function() {
 pub struct RiskyStruct {
     pub x: u8,
 }
+
+mod private {
+    /// This function does something really risky!
+    ///
+    /// Don't use it yet!
+    #[stability::unstable(feature = "risky-private-function")]
+    pub fn risky_private_function() {
+        unimplemented!()
+    }
+}
+
+#[allow(unused_imports)]
+#[stability::unstable(feature = "risky-private-function")]
+pub use private::risky_private_function;
